@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CustomSelectedTextView">
+        <attr name="textColorSelected" format="color" />
+        <attr name="textColorUnSelected" format="color" />=
+    </declare-styleable>
+</resources>
