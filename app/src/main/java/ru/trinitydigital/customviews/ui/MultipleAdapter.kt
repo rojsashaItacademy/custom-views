@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ru.trinitydigital.customviews.databinding.*
 import ru.trinitydigital.customviews.model.Response
+import ru.trinitydigital.customviews.ui.RecyclerTypes.*
 
 class MultipleAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -18,33 +19,33 @@ class MultipleAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            RecyclerTypes.MARKETING.type -> CardsViewHolder.create(parent)
-            RecyclerTypes.MENU.type -> TextViewHolder.create(parent)
-            RecyclerTypes.SHOPPING.type -> ShoppingViewHolder.create(parent)
-            RecyclerTypes.TAGS.type -> TagsViewHolder.create(parent)
-            RecyclerTypes.RECIPES.type -> RecipesViewHolder.create(parent)
+            MARKETING.type -> CardsViewHolder.create(parent)
+            MENU.type -> TextViewHolder.create(parent)
+            SHOPPING.type -> ShoppingViewHolder.create(parent)
+            TAGS.type -> TagsViewHolder.create(parent)
+            RECIPES.type -> RecipesViewHolder.create(parent)
             else -> TextViewHolder.create(parent)
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (getItemViewType(position)) {
-            RecyclerTypes.MARKETING.type -> (holder as CardsViewHolder).bind(list[position])
-            RecyclerTypes.MENU.type -> (holder as TextViewHolder).bind(list[position])
-            RecyclerTypes.SHOPPING.type -> (holder as ShoppingViewHolder).bind(list[position])
-            RecyclerTypes.TAGS.type -> (holder as TagsViewHolder).bind(list[position])
-            RecyclerTypes.RECIPES.type -> (holder as RecipesViewHolder).bind(list[position])
+            MARKETING.type -> (holder as CardsViewHolder).bind(list[position])
+            MENU.type -> (holder as TextViewHolder).bind(list[position])
+            SHOPPING.type -> (holder as ShoppingViewHolder).bind(list[position])
+            TAGS.type -> (holder as TagsViewHolder).bind(list[position])
+            RECIPES.type -> (holder as RecipesViewHolder).bind(list[position])
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         return when (list[position].type) {
-            RecyclerTypes.MARKETING.typeName -> RecyclerTypes.MARKETING.type
-            RecyclerTypes.MENU.typeName -> RecyclerTypes.MENU.type
-            RecyclerTypes.SHOPPING.typeName -> RecyclerTypes.SHOPPING.type
-            RecyclerTypes.TAGS.typeName -> RecyclerTypes.TAGS.type
-            RecyclerTypes.RECIPES.typeName -> RecyclerTypes.RECIPES.type
-            else -> RecyclerTypes.MARKETING.type
+            MARKETING.typeName -> MARKETING.type
+            MENU.typeName -> MENU.type
+            SHOPPING.typeName -> SHOPPING.type
+            TAGS.typeName -> TAGS.type
+            RECIPES.typeName -> RECIPES.type
+            else -> MARKETING.type
         }
     }
 
@@ -82,7 +83,8 @@ class TextViewHolder(private val binding: ItemTextBinding) : RecyclerView.ViewHo
     }
 }
 
-class ShoppingViewHolder(private val binding: ItemShoppingBinding) : RecyclerView.ViewHolder(binding.root) {
+class ShoppingViewHolder(private val binding: ItemShoppingBinding) :
+    RecyclerView.ViewHolder(binding.root) {
     fun bind(response: Response) {
         binding.tvTitle.text = response.name
     }
@@ -113,9 +115,19 @@ class TagsViewHolder(private val binding: ItemTagsBinding) : RecyclerView.ViewHo
     }
 }
 
-class RecipesViewHolder(private val binding: ItemRecipesBinding) : RecyclerView.ViewHolder(binding.root) {
+class RecipesViewHolder(private val binding: ItemRecipesBinding) :
+    RecyclerView.ViewHolder(binding.root) {
+
+    private val adapter by lazy { RecipesAdapter() }
+
+    init {
+        binding.favoritesRv.adapter = adapter
+    }
+
     fun bind(response: Response) {
-        binding.tvTitle.text = response.name
+        binding.favoritesTitle.text = response.name
+        adapter.update(response.recipes)
+        response.recipes
     }
 
     companion object {
